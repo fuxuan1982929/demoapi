@@ -16,6 +16,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/WeatherForecast";
+                    await next();
+                }
+            });
+            
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
