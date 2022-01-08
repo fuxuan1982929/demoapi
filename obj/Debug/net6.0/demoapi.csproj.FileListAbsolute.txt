@@ -25,3 +25,4 @@ C:\magic\github\demoapi\obj\Debug\net6.0\demoapi.dll
 C:\magic\github\demoapi\obj\Debug\net6.0\ref\demoapi.dll
 C:\magic\github\demoapi\obj\Debug\net6.0\demoapi.pdb
 C:\magic\github\demoapi\obj\Debug\net6.0\demoapi.genruntimeconfig.cache
+C:\magic\github\demoapi\bin\Debug\net6.0\Dockerfile
