@@ -11,9 +11,9 @@ public class DemoApiController : ControllerBase
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    private readonly ILogger<WeatherForecastController> _logger;
+    private readonly ILogger<DemoApiController> _logger;
 
-    public DemoApiController(ILogger<WeatherForecastController> logger)
+    public DemoApiController(ILogger<DemoApiController> logger)
     {
         _logger = logger;
     }
