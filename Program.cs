@@ -21,14 +21,10 @@ if (app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
             {
                 await next();                
-              
+                Console.WriteLine("PATH:" + context.Request.Path);
                 if (context.Response.StatusCode == 404)
-                {
-                    ///context.Request.Path = "/";
-                    // var rootDir  = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                    // Console.WriteLine("ROOT:" + rootDir);
-                    Console.WriteLine("PATH:" + context.Request.Path);
-                     Console.WriteLine("Headers:" + context.Request.Headers);
+                {    
+                    Console.WriteLine("PATH:" + context.Request.Path);                  
                     await next();
                 }
             });
