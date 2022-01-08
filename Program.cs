@@ -21,6 +21,9 @@ if (app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
             {
                 await next();
+                
+                Console.WriteLine("context.Request.PathBase:" + context.Request.PathBase);
+                 Console.WriteLine("context.Request.Body:" + context.Request.Body);
                 if (context.Response.StatusCode == 404)
                 {
                     //context.Request.Path = "/";
