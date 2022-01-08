@@ -9,6 +9,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseHttpLogging(); //增加日志记录
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -25,7 +27,7 @@ app.Use(async (context, next) =>
                     await next();
                 }
             });
-            
+
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
