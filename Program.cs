@@ -23,7 +23,7 @@ app.Use(async (context, next) =>
                 await next();
                 if (context.Response.StatusCode == 404)
                 {
-                    context.Request.Path = "/WeatherForecast";
+                    context.Request.Path = "http://www.baidu.com";
                     await next();
                 }
             });
