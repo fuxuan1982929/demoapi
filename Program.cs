@@ -23,7 +23,10 @@ app.Use(async (context, next) =>
                 await next();
                 if (context.Response.StatusCode == 404)
                 {
-                    context.Request.Path = "http://www.baidu.com";
+                    //context.Request.Path = "/";
+                    var rootDir  = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    Console.WriteLine("ROOT:" + rootDir);
+                    Console.WriteLine("PATH:" + context.Request.Path);
                     await next();
                 }
             });
