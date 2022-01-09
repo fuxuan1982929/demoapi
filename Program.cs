@@ -37,12 +37,7 @@ string vPath = app.Configuration["virtualPath"];
 
 app.UseHttpLogging(); //增加日志记录
 
-// global cors policy
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // allow any origin
-    .AllowCredentials()); // allow credentials
+
 
 app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
@@ -80,6 +75,13 @@ app.Use(async (context, next) =>
 });
 
 app.UseHttpsRedirection();
+
+// global cors policy
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials()); // allow credentials
 
 app.UseAuthorization();
 
