@@ -19,17 +19,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Use(async (context, next) =>
-            {
-                await next();                
-                Console.WriteLine("PATH:" + context.Request.Path);
-                if (context.Response.StatusCode == 404)
-                {    
-                    Console.WriteLine("PATH:" + context.Request.Path);                  
-                    await next();
-                }
-            });
+{
+    await next();                
+    Console.WriteLine("PATH:" + context.Request.Path);
+    // if (context.Response.StatusCode == 404)
+    // {    
+    //     Console.WriteLine("PATH:" + context.Request.Path);                  
+    //     await next();
+    // }
+});
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
