@@ -56,8 +56,12 @@ app.UsePathBase(new PathString(vPath));
         {
             //根据访问地址，设置swagger服务路径
             swagger.Servers = new List<OpenApiServer> {
+#if DEBUG
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.Headers["X-Forwarded-Prefix"]}" },
+#else
                 new OpenApiServer { Url = "https://api.talkofice.com/demoapi"}
+#endif
+                
             };
         });
     });
