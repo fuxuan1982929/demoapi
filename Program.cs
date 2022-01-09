@@ -6,7 +6,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AnyOrigin", builder =>
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod();
+    })
+);
+
+// Configure
+app.UseCors("AnyOrigin");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -36,8 +47,6 @@ var app = builder.Build();
 string vPath = app.Configuration["virtualPath"];
 
 app.UseHttpLogging(); //增加日志记录
-
-
 
 app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
@@ -77,11 +86,7 @@ app.Use(async (context, next) =>
 app.UseHttpsRedirection();
 
 // global cors policy
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // allow any origin
-    .AllowCredentials()); // allow credentials
+app.UseCors("AnyOrigin"); 
 
 app.UseAuthorization();
 
