@@ -38,7 +38,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("./swagger/v1/swagger.json", "v1");
+        options.SwaggerEndpoint("swagger/v1/swagger.json", "v1");
         //若为string.Empty,则为根目录
         options.RoutePrefix = "swagger";
     });
