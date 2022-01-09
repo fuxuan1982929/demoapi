@@ -35,8 +35,8 @@ app.UseHttpLogging(); //增加日志记录
 string vPath = app.Configuration["virtualPath"];
 app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
 
     app.UseSwaggerUI(options =>
@@ -45,7 +45,7 @@ if (app.Environment.IsDevelopment())
         //若为string.Empty,则为根目录
         options.RoutePrefix = string.Empty; 
     });
-}
+//}
 
 app.Use(async (context, next) =>
 {
