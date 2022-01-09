@@ -32,15 +32,18 @@ var app = builder.Build();
 
 app.UseHttpLogging(); //增加日志记录
 
+string vPath = app.Configuration["virtualPath"];
+app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("v1/swagger.json", "v1");
+        options.SwaggerEndpoint($"{vPath}/swagger/v1/swagger.json", "v1");
         //若为string.Empty,则为根目录
-        options.RoutePrefix = "swagger";
+        options.RoutePrefix = string.Empty; 
     });
 }
 
