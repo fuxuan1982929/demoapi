@@ -41,7 +41,7 @@ app.UsePathBase(new PathString(vPath));
 
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint($"{vPath}/swagger/v1/swagger.json", "v1");
+        options.SwaggerEndpoint($"/swagger/v1/swagger.json", "v1");
         //若为string.Empty,则为根目录
         options.RoutePrefix = string.Empty; 
     });
