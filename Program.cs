@@ -84,6 +84,7 @@ app.UseSwaggerUI(options =>
 });
 //}
 
+//第一层中间件
 app.Use(async (context, next) =>
 {
     // foreach (var i in context.Request.Headers)
@@ -99,7 +100,7 @@ app.Use(async (context, next) =>
     else
     {
         Console.WriteLine("BF>PATH:" + context.Request.Path);
-        Console.WriteLine("BF>Resp StatusCode:" +context.Response.StatusCode);
+        Console.WriteLine("BF>Resp StatusCode:" + context.Response.StatusCode);
     }
 
     await next();
@@ -108,11 +109,16 @@ app.Use(async (context, next) =>
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
         Console.WriteLine("AF>404-PATH:" + context.Request.Path);
+        Console.WriteLine("AF>404-Headers" + context.Response.Headers);
+        foreach (var i in context.Response.Headers)
+        {
+            Console.WriteLine($"{i.Key}:{i.Value}");
+        }
     }
     else
     {
         Console.WriteLine("AF>PATH:" + context.Request.Path);
-        Console.WriteLine("AF>Resp StatusCode:" +context.Response.StatusCode);
+        Console.WriteLine("AF>Resp StatusCode:" + context.Response.StatusCode);
     }
 });
 
