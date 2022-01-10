@@ -49,7 +49,7 @@ app.UseHttpLogging(); //增加日志记录
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.All
 });
 
 app.UsePathBase(new PathString(vPath));
