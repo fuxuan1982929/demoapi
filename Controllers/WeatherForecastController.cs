@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace demoapi.Controllers;
@@ -18,6 +19,7 @@ public class WeatherForecastController : ControllerBase
     //     _logger = logger;
     // }
 
+    [AllowAnonymous]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
