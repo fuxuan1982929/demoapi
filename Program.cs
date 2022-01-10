@@ -80,6 +80,12 @@ app.Use(async (context, next) =>
 
     if (context.Response.StatusCode == 404)
     {
+        //Console.WriteLine("404-PATH:" + context.Request.Headers);
+        foreach(var i in context.Request.Headers)
+        {           
+            Console.WriteLine($"404-HEADER: KEY:{i.Key}, VALUE:{i.Value}");
+        }
+        
         Console.WriteLine("404-PATH:" + context.Request.Path);
         await next();
     }
