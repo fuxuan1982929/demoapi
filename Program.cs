@@ -54,8 +54,8 @@ app.UseSwagger(c =>
 {
     c.PreSerializeFilters.Add((swagger, httpReq) =>
     {
-            //根据访问地址，设置swagger服务路径
-            swagger.Servers = new List<OpenApiServer> {
+        //根据访问地址，设置swagger服务路径
+        swagger.Servers = new List<OpenApiServer> {
 #if DEBUG
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.Headers["X-Forwarded-Prefix"]}" },
 #else
@@ -69,8 +69,8 @@ app.UseSwagger(c =>
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint($"{vPath}/swagger/v1/swagger.json", "v1");
-        //若为string.Empty,则为根目录
-        options.RoutePrefix = string.Empty;
+    //若为string.Empty,则为根目录
+    options.RoutePrefix = string.Empty;
 });
 //}
 
@@ -78,14 +78,16 @@ app.Use(async (context, next) =>
 {
     await next();
 
+    foreach (var i in context.Request.Headers)
+    {
+        Console.WriteLine($"{i.Key}:{i.Value}");
+    }
+
     if (context.Response.StatusCode == 404)
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
-        foreach(var i in context.Request.Headers)
-        {           
-            Console.WriteLine($"404-HEADER: KEY:{i.Key}, VALUE:{i.Value}");
-        }
-        
+
+
         Console.WriteLine("404-PATH:" + context.Request.Path);
         await next();
     }
