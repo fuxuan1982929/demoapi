@@ -132,6 +132,9 @@ app.UseCors("AnyOrigin");
 
 app.UseAuthorization();
 
+//自定义中间件（异常处理）
+app.UseMiddleware<demoapi.Middleware.MyExceptionMiddleware>();
+
 app.MapControllers();
 
 app.Run();
