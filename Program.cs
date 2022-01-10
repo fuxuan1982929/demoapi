@@ -3,10 +3,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("AnyOrigin", builder =>
@@ -18,6 +14,11 @@ builder.Services.AddCors(options =>
         });
     }
 );
+
+
+// Add services to the container.
+builder.Services.AddControllers();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,8 +52,7 @@ string vPath = app.Configuration["virtualPath"];
 //     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 // });
 
-// global cors policy
-app.UseCors("AnyOrigin");
+
 
 app.UseHttpLogging(); //增加日志记录
 
@@ -120,6 +120,9 @@ app.Use(async (context, next) =>
 
 
 //app.UseHttpsRedirection();
+
+// global cors policy
+app.UseCors("AnyOrigin");
 
 app.UseAuthorization();
 
