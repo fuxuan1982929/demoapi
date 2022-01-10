@@ -86,12 +86,10 @@ app.UseSwaggerUI(options =>
 
 app.Use(async (context, next) =>
 {
-    await next();
-
-    foreach (var i in context.Request.Headers)
-    {
-        Console.WriteLine($"{i.Key}:{i.Value}");
-    }
+    // foreach (var i in context.Request.Headers)
+    // {
+    //     Console.WriteLine($"{i.Key}:{i.Value}");
+    // }
 
     if (context.Response.StatusCode == 404)
     {
@@ -102,6 +100,8 @@ app.Use(async (context, next) =>
     {
         Console.WriteLine("PATH:" + context.Request.Path);
     }
+
+    await next();
 });
 
 
