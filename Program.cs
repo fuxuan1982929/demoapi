@@ -102,19 +102,6 @@ app.Use(async (context, next) =>
     }
 });
 
-app.Use(async (context, next) =>
-{
-    context.Request.EnableBuffering();
-    string reqBody;
-    using (var reader = new StreamReader(context.Request.Body))
-    {
-        reqBody = await reader.ReadToEndAsync();
-        context.Request.Body.Seek(0, SeekOrigin.Begin);
-        Console.WriteLine($"Incoming request: METHOD={context.Request.Method} PATH={context.Request.Path} BODY=\"{reqBody}\"");
-    }
-
-    await next();
-});
 
 //app.UseHttpsRedirection();
 
