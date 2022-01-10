@@ -99,6 +99,7 @@ app.Use(async (context, next) =>
     else
     {
         Console.WriteLine("PATH:" + context.Request.Path);
+        Console.WriteLine("Resp Body:" +context.Response.Body);
     }
 
     await next();
