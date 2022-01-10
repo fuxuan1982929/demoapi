@@ -13,7 +13,8 @@ builder.Services.AddCors(options =>
         {
             builder
                 .AllowAnyOrigin()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
     }
 );
@@ -80,30 +81,29 @@ app.UseSwaggerUI(options =>
 });
 //}
 
-// app.Use(async (context, next) =>
-// {
-//     await next();
+app.Use(async (context, next) =>
+{
+    await next();
 
-//     foreach (var i in context.Request.Headers)
-//     {
-//         Console.WriteLine($"{i.Key}:{i.Value}");
-//     }
+    foreach (var i in context.Request.Headers)
+    {
+        Console.WriteLine($"{i.Key}:{i.Value}");
+    }
 
-//     if (context.Response.StatusCode == 404)
-//     {
-//         //Console.WriteLine("404-PATH:" + context.Request.Headers);
+    if (context.Response.StatusCode == 404)
+    {
+        //Console.WriteLine("404-PATH:" + context.Request.Headers);
+        Console.WriteLine("404-PATH:" + context.Request.Path);
+        await next();
+    }
+    else
+    {
+        Console.WriteLine("PATH:" + context.Request.Path);
+    }
+});
 
-
-//         Console.WriteLine("404-PATH:" + context.Request.Path);
-//         await next();
-//     }
-//     else
-//     {
-//         Console.WriteLine("PATH:" + context.Request.Path);
-//     }
-// });
-
-app.Use(async (context, next) => {
+app.Use(async (context, next) =>
+{
     context.Request.EnableBuffering();
     string reqBody;
     using (var reader = new StreamReader(context.Request.Body))
@@ -112,6 +112,7 @@ app.Use(async (context, next) => {
         context.Request.Body.Seek(0, SeekOrigin.Begin);
         Console.WriteLine($"Incoming request: METHOD={context.Request.Method} PATH={context.Request.Path} BODY=\"{reqBody}\"");
     }
+
     await next();
 });
 
