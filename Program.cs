@@ -46,10 +46,13 @@ var app = builder.Build();
 
 string vPath = app.Configuration["virtualPath"];
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+// app.UseForwardedHeaders(new ForwardedHeadersOptions
+// {
+//     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+// });
+
+// global cors policy
+app.UseCors("AnyOrigin");
 
 app.UseHttpLogging(); //增加日志记录
 
@@ -105,8 +108,7 @@ app.Use(async (context, next) =>
 
 //app.UseHttpsRedirection();
 
-// global cors policy
-app.UseCors("AnyOrigin");
+
 
 app.UseAuthorization();
 
