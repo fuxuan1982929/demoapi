@@ -97,7 +97,6 @@ app.Use(async (context, next) =>
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
         Console.WriteLine("404-PATH:" + context.Request.Path);
-        await next();
     }
     else
     {
