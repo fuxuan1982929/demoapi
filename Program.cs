@@ -125,8 +125,6 @@ if (builder.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.MapGet("/", () => "Hello World!");
-
 //app.UseHttpsRedirection();
 
 // global cors policy
