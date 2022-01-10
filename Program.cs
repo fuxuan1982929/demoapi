@@ -109,11 +109,7 @@ app.Use(async (context, next) =>
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
         Console.WriteLine("AF>404-PATH:" + context.Request.Path);
-        Console.WriteLine("AF>404-Headers" + context.Response.Headers);
-        foreach (var i in context.Response.Headers)
-        {
-            Console.WriteLine($"{i.Key}:{i.Value}");
-        }
+        Console.WriteLine("AF>404-ContentType" + context.Response.ContentType);       
     }
     else
     {
