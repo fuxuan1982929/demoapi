@@ -19,8 +19,6 @@ public class WeatherForecastController : ControllerBase
     //     _logger = logger;
     // }
 
-    [AllowAnonymous]
-    [ApiExplorerSettings(GroupName = "All")]
     [HttpGet()]
     public IEnumerable<WeatherForecast> Get()
     {
