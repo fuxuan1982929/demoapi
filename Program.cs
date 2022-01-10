@@ -119,6 +119,14 @@ app.Use(async (context, next) =>
 });
 
 
+// Configure the HTTP request pipeline.
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.MapGet("/", () => "Hello World!");
+
 //app.UseHttpsRedirection();
 
 // global cors policy
