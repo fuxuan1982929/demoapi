@@ -45,6 +45,11 @@ var app = builder.Build();
 
 string vPath = app.Configuration["virtualPath"];
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseHttpLogging(); //增加日志记录
 
 app.UsePathBase(new PathString(vPath));
