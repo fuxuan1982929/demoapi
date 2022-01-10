@@ -108,7 +108,7 @@ app.Use(async (context, next) =>
 
 //app.UseHttpsRedirection();
 
-
+app.UseDeveloperExceptionPage();
 
 app.UseAuthorization();
 
