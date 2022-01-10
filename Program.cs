@@ -50,10 +50,10 @@ app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger(c =>
+app.UseSwagger(c =>
+{
+    c.PreSerializeFilters.Add((swagger, httpReq) =>
     {
-        c.PreSerializeFilters.Add((swagger, httpReq) =>
-        {
             //根据访问地址，设置swagger服务路径
             swagger.Servers = new List<OpenApiServer> {
 #if DEBUG
@@ -61,34 +61,38 @@ app.UsePathBase(new PathString(vPath));
 #else
                 new OpenApiServer { Url = "https://api.talkofice.com/demoapi"}
 #endif
-                
-            };
-        });
-    });
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint($"{vPath}/swagger/v1/swagger.json", "v1");
-        //若为string.Empty,则为根目录
-        options.RoutePrefix = string.Empty; 
+            };
     });
+});
+
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint($"{vPath}/swagger/v1/swagger.json", "v1");
+        //若为string.Empty,则为根目录
+        options.RoutePrefix = string.Empty;
+});
 //}
 
 app.Use(async (context, next) =>
 {
-    await next();                
-    Console.WriteLine("PATH:" + context.Request.Path);
-    // if (context.Response.StatusCode == 404)
-    // {    
-    //     Console.WriteLine("PATH:" + context.Request.Path);                  
-    //     await next();
-    // }
+    await next();
+
+    if (context.Response.StatusCode == 404)
+    {
+        Console.WriteLine("404-PATH:" + context.Request.Path);
+        await next();
+    }
+    else
+    {
+        Console.WriteLine("PATH:" + context.Request.Path);
+    }
 });
 
 app.UseHttpsRedirection();
 
 // global cors policy
-app.UseCors("AnyOrigin"); 
+app.UseCors("AnyOrigin");
 
 app.UseAuthorization();
 
