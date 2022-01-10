@@ -115,7 +115,7 @@ app.Use(async (context, next) => {
     await next();
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // global cors policy
 app.UseCors("AnyOrigin");
