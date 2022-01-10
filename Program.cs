@@ -47,10 +47,14 @@ string vPath = app.Configuration["virtualPath"];
 
 app.UseHttpLogging(); //增加日志记录
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+var forwardingOptions = new ForwardedHeadersOptions()
 {
-    ForwardedHeaders = ForwardedHeaders.All
-});
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardingOptions.KnownNetworks.Clear(); // Loopback by default, this should be temporary
+forwardingOptions.KnownProxies.Clear(); // Update to include
+
+app.UseForwardedHeaders(forwardingOptions);
 
 app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
