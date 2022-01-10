@@ -94,15 +94,26 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == 404)
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
-        Console.WriteLine("404-PATH:" + context.Request.Path);
+        Console.WriteLine("BF>404-PATH:" + context.Request.Path);
     }
     else
     {
-        Console.WriteLine("PATH:" + context.Request.Path);
-        Console.WriteLine("Resp StatusCode:" +context.Response.StatusCode);
+        Console.WriteLine("BF>PATH:" + context.Request.Path);
+        Console.WriteLine("BF>Resp StatusCode:" +context.Response.StatusCode);
     }
 
     await next();
+
+    if (context.Response.StatusCode == 404)
+    {
+        //Console.WriteLine("404-PATH:" + context.Request.Headers);
+        Console.WriteLine("AF>404-PATH:" + context.Request.Path);
+    }
+    else
+    {
+        Console.WriteLine("AF>PATH:" + context.Request.Path);
+        Console.WriteLine("AF>Resp StatusCode:" +context.Response.StatusCode);
+    }
 });
 
 
