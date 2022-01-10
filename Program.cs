@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,11 @@ var app = builder.Build();
 string vPath = app.Configuration["virtualPath"];
 
 app.UseHttpLogging(); //增加日志记录
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UsePathBase(new PathString(vPath));
 // Configure the HTTP request pipeline.
