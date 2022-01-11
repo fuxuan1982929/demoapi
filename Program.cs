@@ -69,7 +69,8 @@ app.UseSwagger(c =>
 #if DEBUG
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.Headers["X-Forwarded-Prefix"]}" },
 #else
-                new OpenApiServer { Url = "https://api.talkofice.com/demoapi"}
+                new OpenApiServer { Url = "https://api.talkofice.com/demoapi"}，
+                new OpenApiServer { Url = "http://106.55.228.151:30080/demoapi"}
 #endif
 
             };
@@ -87,35 +88,19 @@ app.UseSwaggerUI(options =>
 //第一层中间件
 app.Use(async (context, next) =>
 {
-    // foreach (var i in context.Request.Headers)
-    // {
-    //     Console.WriteLine($"{i.Key}:{i.Value}");
-    // }
-
     if (context.Response.StatusCode == 404)
     {
         //Console.WriteLine("404-PATH:" + context.Request.Headers);
-        Console.WriteLine("BF>404-PATH:" + context.Request.Path);
+        Console.WriteLine("404-PATH:" + context.Request.Path);
+        Console.WriteLine("404-ContentType" + context.Response.ContentType);
     }
     else
     {
-        Console.WriteLine("BF>PATH:" + context.Request.Path);
-        Console.WriteLine("BF>Resp StatusCode:" + context.Response.StatusCode);
+        Console.WriteLine("PATH:" + context.Request.Path);
+        Console.WriteLine("Resp StatusCode:" + context.Response.StatusCode);
     }
-
+    // Call the next delegate/middleware in the pipeline
     await next();
-
-    if (context.Response.StatusCode == 404)
-    {
-        //Console.WriteLine("404-PATH:" + context.Request.Headers);
-        Console.WriteLine("AF>404-PATH:" + context.Request.Path);
-        Console.WriteLine("AF>404-ContentType" + context.Response.ContentType);       
-    }
-    else
-    {
-        Console.WriteLine("AF>PATH:" + context.Request.Path);
-        Console.WriteLine("AF>Resp StatusCode:" + context.Response.StatusCode);
-    }
 });
 
 
@@ -133,7 +118,7 @@ app.UseCors("AnyOrigin");
 app.UseAuthorization();
 
 //自定义中间件（异常处理）
-app.UseMiddleware<demoapi.Middleware.MyExceptionMiddleware>();
+//app.UseMiddleware<demoapi.Middleware.MyExceptionMiddleware>();
 
 app.MapControllers();
 
