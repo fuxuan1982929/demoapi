@@ -69,7 +69,7 @@ app.UseSwagger(c =>
 #if DEBUG
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.Headers["X-Forwarded-Prefix"]}" },
 #else
-                new OpenApiServer { Url = "https://api.talkofice.com/demoapi"}，
+                new OpenApiServer { Url = "https://api.talkofice.com/demoapi"},
                 new OpenApiServer { Url = "http://106.55.228.151:30080/demoapi"}
 #endif
 
