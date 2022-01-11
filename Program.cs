@@ -15,10 +15,8 @@ builder.Services.AddCors(options =>
     }
 );
 
-
 // Add services to the container.
 builder.Services.AddControllers();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -70,7 +68,7 @@ app.UseSwagger(c =>
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.Headers["X-Forwarded-Prefix"]}" },
 #else
                 new OpenApiServer { Url = "https://api.talkofice.com/demoapi"},
-                new OpenApiServer { Url = "http://106.55.228.151:30080/demoapi"}
+                new OpenApiServer { Url = "http://api.talkofice.com:30080/demoapi"}
 #endif
 
             };
@@ -88,17 +86,17 @@ app.UseSwaggerUI(options =>
 //第一层中间件
 app.Use(async (context, next) =>
 {
-    if (context.Response.StatusCode == 404)
-    {
-        //Console.WriteLine("404-PATH:" + context.Request.Headers);
-        Console.WriteLine("404-PATH:" + context.Request.Path);
-        Console.WriteLine("404-ContentType" + context.Response.ContentType);
-    }
-    else
-    {
-        Console.WriteLine("PATH:" + context.Request.Path);
-        Console.WriteLine("Resp StatusCode:" + context.Response.StatusCode);
-    }
+    // if (context.Response.StatusCode == 404)
+    // {
+    //     //Console.WriteLine("404-PATH:" + context.Request.Headers);
+    //     Console.WriteLine("404-PATH:" + context.Request.Path);
+    //     Console.WriteLine("404-ContentType" + context.Response.ContentType);
+    // }
+    // else
+    // {
+    //     Console.WriteLine("PATH:" + context.Request.Path);
+    //     Console.WriteLine("Resp StatusCode:" + context.Response.StatusCode);
+    // }
     // Call the next delegate/middleware in the pipeline
     await next();
 });
