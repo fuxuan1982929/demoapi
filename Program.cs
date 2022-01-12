@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
-
+using demoapi.RedisClient;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -40,6 +40,11 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+string RedisConnStr = builder.Configuration.GetConnectionString("RedisConnStr");
+
+//Add redis cache
+builder.Services.AddRedisClient(RedisConnStr);
 
 var app = builder.Build();
 
