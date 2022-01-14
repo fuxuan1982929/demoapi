@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
 using demoapi.RedisClient;
+using demoapi.MQ;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -65,9 +67,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 string RedisConnStr = builder.Configuration.GetConnectionString("RedisConnStr");
-
+var RabbitMQConnSection = builder.Configuration.GetSection("RedisConnStr");
 //Add redis cache
 builder.Services.AddRedisClient(RedisConnStr);
+//Add rabbitMQ 
+builder.Services.Configure<RabbitMQConfig>(RabbitMQConnSection);
+builder.Services.AddSingleton<RabbitMQHelper>();
 
 var app = builder.Build();
 
@@ -77,8 +82,6 @@ string vPath = app.Configuration["virtualPath"];
 // {
 //     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 // });
-
-
 
 app.UseHttpLogging(); //增加日志记录
 

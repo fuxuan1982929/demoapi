@@ -16,6 +16,7 @@
     <PackageReference Include="Caching.CSRedis" Version="3.6.80" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
   </ItemGroup>
 
 </Project>
