@@ -39,6 +39,29 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://api.talkofice.com/license")
         }
     });
+
+    //Add Token
+    options.AddSecurityDefinition("UserToken", new OpenApiSecurityScheme()
+    {
+        Description = "<a href='http://'>获取TOKEN</a>",
+        Name = "UserToken",
+        In = ParameterLocation.Header,
+        Scheme = "string"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "UserToken"
+            }
+        }, new string[]{}
+        }
+    });
 });
 
 string RedisConnStr = builder.Configuration.GetConnectionString("RedisConnStr");

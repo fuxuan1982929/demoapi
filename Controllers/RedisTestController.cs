@@ -1,3 +1,4 @@
+using demoapi.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace demoapi.Controllers;
@@ -6,6 +7,7 @@ namespace demoapi.Controllers;
 [Route("[controller]/[action]")]
 public class RedisTestController  : ControllerBase
 {
+    [MyApi]
     [HttpGet()]
     public async Task<string> GetVal()
     {
