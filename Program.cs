@@ -67,7 +67,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 string RedisConnStr = builder.Configuration.GetConnectionString("RedisConnStr");
-var RabbitMQConnSection = builder.Configuration.GetSection("RedisConnStr");
+var RabbitMQConnSection = builder.Configuration.GetSection("RabbitMQConfig");
 //Add redis cache
 builder.Services.AddRedisClient(RedisConnStr);
 //Add rabbitMQ 
