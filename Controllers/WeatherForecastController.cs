@@ -35,4 +35,11 @@ public class WeatherForecastController : ControllerBase
         })
         .ToArray();
     }
+
+    [MyApi]
+    [HttpGet()]
+    public string GetStr()
+    {
+        throw new Exception("Custom Exception");
+    }
 }

@@ -14,7 +14,7 @@ public class MyExceptionMiddleware
         try
         {
             await next.Invoke(context);
-            var features = context.Features;
+            //var features = context.Features;
         }
         catch (Exception e)
         {
@@ -41,15 +41,14 @@ public class MyExceptionMiddleware
 
     private async Task OutputResult(HttpContext context, string message)
     {
-        // var result = new Webbase.MyDataResult<dynamic>
-        // {
-        //     Result = false,
-        //     Code = 500,
-        //     Message = message,
-        //     Data = null
-        // };
+        var result = new Webbase.MyDataResult<dynamic>
+        {
+            Result = false,
+            Code = 500,
+            Message = message,
+            Data = null
+        };
 
-        //await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(result));
-        await context.Response.WriteAsync(message);
+        await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(result));
     }
 }
