@@ -1,4 +1,5 @@
 using System.Net;
+using System.Reflection;
 using demoapi;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -74,7 +75,6 @@ IConfiguration GetConfiguration()
     //     .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
     //     .AddEnvironmentVariables();
 
-    var builder = WebApplication.CreateBuilder(args);
     //var config = builder.Build();
 
     // if (config.GetValue<bool>("UseVault", false))
@@ -85,7 +85,7 @@ IConfiguration GetConfiguration()
     //         config["Vault:ClientSecret"]);
     //     builder.AddAzureKeyVault(new Uri($"https://{config["Vault:Name"]}.vault.azure.net/"), credential);
     // }
-
+    var builder = WebApplication.CreateBuilder(args);
     return builder.Configuration;
 }
 
@@ -98,7 +98,7 @@ IConfiguration GetConfiguration()
 
 public partial class Program
 {
-    public static string Namespace = typeof(Startup).Namespace;
+    //public static string Namespace = typeof(Startup).Namespace;
     //public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1);
     public static string AppName = "demoapi";
 }

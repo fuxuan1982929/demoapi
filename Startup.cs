@@ -1,6 +1,12 @@
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using demoapi.Infrastructure;
+using demoapi.MQ;
+using demoapi.RedisClient;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 
 namespace demoapi;
@@ -9,7 +15,7 @@ public class Startup
 {
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        Configuration = configuration;       
+        Configuration = configuration;
     }
 
     public IConfiguration Configuration { get; }
@@ -18,8 +24,8 @@ public class Startup
     {
         services
         //.AddApplicationInsights(Configuration)
-        .AddCustomMvc()
-        //.AddHealthChecks(Configuration)
+        .AddCustomMvc(Configuration)
+        .AddHealthChecks(Configuration)
         //.AddCustomDbContext(Configuration)
         .AddCustomSwagger(Configuration);
         //.AddCustomIntegrations(Configuration)
@@ -28,13 +34,13 @@ public class Startup
         //.AddCustomAuthentication(Configuration);
 
         //configure autofac
-        var container = new ContainerBuilder();
-        container.Populate(services);
+        var builder = new ContainerBuilder();     
 
-        //container.RegisterModule(new MediatorModule());
-        container.RegisterModule(new ApplicationModule(Configuration["ConnectionString"]));
+        builder.Populate(services);
+        //builder.RegisterModule(new MediatorModule());
+        builder.RegisterModule(new ApplicationModule(Configuration["ConnectionString"]));
 
-        return new AutofacServiceProvider(container.Build());
+        return new AutofacServiceProvider(builder.Build());
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -43,12 +49,14 @@ public class Startup
         //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
 
         var pathBase = Configuration["PATH_BASE"];
-  
+
         if (!string.IsNullOrEmpty(pathBase))
         {
             loggerFactory.CreateLogger<Startup>().LogInformation("Using PATH BASE '{pathBase}'", pathBase);
             app.UsePathBase(pathBase);
         }
+
+        Console.WriteLine($"Using PATH BASE '{pathBase}'");
 
         app.UseSwagger(c =>
         {
@@ -79,8 +87,10 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             //endpoints.MapGrpcService<OrderingService>();
-            //endpoints.MapDefaultControllerRoute();
-            endpoints.MapControllers();
+            //app.MapDefaultControllerRoute() 替代 app.MapControllerRoute(name: "default",pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapDefaultControllerRoute();
+            endpoints.MapControllers(); //绑定所有控制器
+
             // endpoints.MapGet("/_proto/", async ctx =>
             // {
             //     ctx.Response.ContentType = "text/plain";
@@ -95,15 +105,17 @@ public class Startup
             //         }
             //     }
             // });
-            // endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-            // {
-            //     Predicate = _ => true,
-            //     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            // });
-            // endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-            // {
-            //     Predicate = r => r.Name.Contains("self")
-            // });
+
+            endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("self")
+            });
         });
 
         ConfigureEventBus(app);
@@ -124,7 +136,7 @@ public class Startup
     protected virtual void ConfigureAuth(IApplicationBuilder app)
     {
         //app.UseAuthentication();
-        //app.UseAuthorization();
+        app.UseAuthorization();
     }
 }
 
@@ -134,21 +146,29 @@ static class CustomExtensionsMethods
     {
         // services.AddApplicationInsightsTelemetry(configuration);
         // services.AddApplicationInsightsKubernetesEnricher();
-
         return services;
     }
 
-    public static IServiceCollection AddCustomMvc(this IServiceCollection services)
+    public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
     {
         // Add framework services.
+
         services.AddControllers(options =>
             {
                 //options.Filters.Add(typeof(HttpGlobalExceptionFilter));
             })
             // Added for functional tests
-            .AddApplicationPart(typeof(demoapi.Controllers.WeatherForecastController).Assembly)
+            //.AddApplicationPart(typeof(demoapi.Controllers.WeatherForecastController).Assembly)
+            //.AddApplicationPart(typeof(demoapi.Controllers.MQTestController).Assembly)
+            // Register your Web API controllers.           
             .AddJsonOptions(options => options.JsonSerializerOptions.WriteIndented = true);
-        //.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+        //Add redis cache
+        string RedisConnStr = configuration.GetConnectionString("RedisConnStr");
+        services.AddRedisClient(RedisConnStr);
+        //add rabbitMQ
+        services.Configure<RabbitMQConfig>(configuration.GetSection("RabbitMQConfig"));
+        services.AddScoped<RabbitMQHelper>();
 
         services.AddCors(options =>
         {
@@ -159,6 +179,39 @@ static class CustomExtensionsMethods
                 .AllowAnyHeader()
                 .AllowCredentials());
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+    {
+        var hcBuilder = services.AddHealthChecks();
+
+        hcBuilder.AddCheck("self", () => HealthCheckResult.Healthy());
+
+        // hcBuilder
+        //     .AddSqlServer(
+        //         configuration["ConnectionString"],
+        //         name: "OrderingDB-check",
+        //         tags: new string[] { "orderingdb" });
+
+        // if (configuration.GetValue<bool>("AzureServiceBusEnabled"))
+        // {
+        //     hcBuilder
+        //         .AddAzureServiceBusTopic(
+        //             configuration["EventBusConnection"],
+        //             topicName: "eshop_event_bus",
+        //             name: "ordering-servicebus-check",
+        //             tags: new string[] { "servicebus" });
+        // }
+        // else
+        // {
+        //     hcBuilder
+        //         .AddRabbitMQ(
+        //             $"amqp://{configuration["EventBusConnection"]}",
+        //             name: "ordering-rabbitmqbus-check",
+        //             tags: new string[] { "rabbitmqbus" });
+        // }
 
         return services;
     }

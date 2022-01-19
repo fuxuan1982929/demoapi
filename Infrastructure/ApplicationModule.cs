@@ -1,4 +1,5 @@
 using Autofac;
+using demoapi.MQ;
 
 namespace demoapi.Infrastructure;
 
@@ -19,7 +20,7 @@ public class ApplicationModule : Autofac.Module
         //     .As<Application.Queries.ICitiesQueries>()
         //     .InstancePerLifetimeScope();
 
-        //builder.RegisterType<BuyerRepository>()
+        // builder.RegisterType<RabbitMQHelper>()
         //    .As<IBuyerRepository>()
         //    .InstancePerLifetimeScope();
 
