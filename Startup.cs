@@ -5,6 +5,7 @@ using demoapi.Infrastructure;
 using demoapi.MQ;
 using demoapi.RedisClient;
 using HealthChecks.UI.Client;
+using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
@@ -34,10 +35,11 @@ public class Startup
         //.AddCustomAuthentication(Configuration);
 
         //configure autofac
-        var builder = new ContainerBuilder();     
+        var builder = new ContainerBuilder();
 
         builder.Populate(services);
-        //builder.RegisterModule(new MediatorModule());
+        
+        builder.RegisterModule(new MediatorModule());
         builder.RegisterModule(new ApplicationModule(Configuration["ConnectionString"]));
 
         return new AutofacServiceProvider(builder.Build());
@@ -48,15 +50,16 @@ public class Startup
         //loggerFactory.AddAzureWebAppDiagnostics();
         //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
 
+        var envDesc = Configuration["ENV"];
         var pathBase = Configuration["PATH_BASE"];
+        
+        loggerFactory.CreateLogger<Startup>().LogInformation(envDesc);
+        loggerFactory.CreateLogger<Startup>().LogInformation("Using PATH BASE '{pathBase}'", pathBase);
 
         if (!string.IsNullOrEmpty(pathBase))
         {
-            loggerFactory.CreateLogger<Startup>().LogInformation("Using PATH BASE '{pathBase}'", pathBase);
             app.UsePathBase(pathBase);
         }
-
-        Console.WriteLine($"Using PATH BASE '{pathBase}'");
 
         app.UseSwagger(c =>
         {
@@ -412,5 +415,5 @@ static class CustomExtensionsMethods
     // }
 }
 
-//dotnet run --launch-profile "demoapi-dev"
-//dotnet run --launch-profile "demoapi"
+//dotnet run --launch-profile "dev"
+//dotnet run --launch-profile "prd"

@@ -32,20 +32,20 @@ finally
 IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
     WebHost.CreateDefaultBuilder(args)
         .CaptureStartupErrors(false)
-        // .ConfigureKestrel(options =>
-        // {
-        //     var ports = GetDefinedPorts(configuration);
-        //     options.Listen(IPAddress.Any, ports.httpPort, listenOptions =>
-        //     {
-        //         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-        //     });
+        .ConfigureKestrel(options =>
+        {
+            //     var ports = GetDefinedPorts(configuration);
+            //     options.Listen(IPAddress.Any, ports.httpPort, listenOptions =>
+            //     {
+            //         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+            //     });
 
-        //     options.Listen(IPAddress.Any, ports.grpcPort, listenOptions =>
-        //     {
-        //         listenOptions.Protocols = HttpProtocols.Http2;
-        //     });
+            //     options.Listen(IPAddress.Any, ports.grpcPort, listenOptions =>
+            //     {
+            //         listenOptions.Protocols = HttpProtocols.Http2;
+            //     });
 
-        // })
+        })
         .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
         .UseStartup<Startup>()
         .UseContentRoot(Directory.GetCurrentDirectory())
@@ -68,13 +68,8 @@ Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
 }
 
 IConfiguration GetConfiguration()
-{    
-    // var builder = new ConfigurationBuilder()
-    //     .SetBasePath(Directory.GetCurrentDirectory())
-    //     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    //     .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
-    //     .AddEnvironmentVariables();
-
+{
+    var builder = WebApplication.CreateBuilder(args);
     //var config = builder.Build();
 
     // if (config.GetValue<bool>("UseVault", false))
@@ -85,7 +80,6 @@ IConfiguration GetConfiguration()
     //         config["Vault:ClientSecret"]);
     //     builder.AddAzureKeyVault(new Uri($"https://{config["Vault:Name"]}.vault.azure.net/"), credential);
     // }
-    var builder = WebApplication.CreateBuilder(args);
     return builder.Configuration;
 }
 
