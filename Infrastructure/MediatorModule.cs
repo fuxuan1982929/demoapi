@@ -29,8 +29,10 @@ public class MediatorModule : Autofac.Module
 
         builder.Register<ServiceFactory>(context =>
         {
-            var componentContext = context.Resolve<IComponentContext>();             
+            var componentContext = context.Resolve<IComponentContext>();   
+            #pragma warning disable 8603, 8600          
             return t => { object o; return componentContext.TryResolve(t, out o) ? o : null; };
+            #pragma warning disable 8603, 8600 
         });
 
         // builder.RegisterGeneric(typeof(LoggingBehavior<,>)).As(typeof(IPipelineBehavior<,>));
