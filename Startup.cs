@@ -28,17 +28,18 @@ public class Startup
         .AddCustomMvc(Configuration)
         .AddHealthChecks(Configuration)
         //.AddCustomDbContext(Configuration)
-        .AddCustomSwagger(Configuration);
+        .AddCustomSwagger(Configuration)
         //.AddCustomIntegrations(Configuration)
         //.AddCustomConfiguration(Configuration)
         //.AddEventBus(Configuration)
         //.AddCustomAuthentication(Configuration);
+        .AddSingleton<IHostedService, MyJobService>();
 
         //configure autofac
         var builder = new ContainerBuilder();
 
         builder.Populate(services);
-        
+
         builder.RegisterModule(new MediatorModule());
         builder.RegisterModule(new ApplicationModule(Configuration["ConnectionString"]));
 
@@ -52,7 +53,7 @@ public class Startup
 
         var envDesc = Configuration["ENV"];
         var pathBase = Configuration["PATH_BASE"];
-        
+
         loggerFactory.CreateLogger<Startup>().LogInformation(envDesc);
         loggerFactory.CreateLogger<Startup>().LogInformation("Using PATH BASE '{pathBase}'", pathBase);
 
@@ -415,5 +416,46 @@ static class CustomExtensionsMethods
     // }
 }
 
+public class MyJobService : BackgroundService
+{
+    //启动5秒一次
+    private int _timeoffset = 5000;
+
+    public ILogger<MyJobService> _logger;
+    public IConfiguration _configuration;
+
+    public MyJobService(ILogger<MyJobService> logger, IConfiguration configuration)
+    {
+        this._logger = logger;
+        this._configuration = configuration;
+    }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await Task.Delay(_timeoffset, stoppingToken);
+
+        try
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+               
+                this._logger.LogInformation(DateTime.Now.ToString() + " MyJob。");
+                 //do
+                await Task.Delay(this._timeoffset, stoppingToken);
+            }
+            this._logger.LogInformation(DateTime.Now.ToString() + "MyJob停止。");
+        }
+        catch (Exception ex)
+        {
+            if (!stoppingToken.IsCancellationRequested)
+            {
+                this._logger.LogInformation(DateTime.Now.ToString() + "MyJob异常:" + ex.Message + "," + ex.StackTrace);
+            }
+            else
+            {
+                this._logger.LogInformation(DateTime.Now.ToString() + "MyJob异常停止。");
+            }
+        }
+    }
+}
 //dotnet run --launch-profile "dev"
 //dotnet run --launch-profile "prd"
