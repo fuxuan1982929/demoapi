@@ -486,7 +486,7 @@ public class RabbitListenerService : BackgroundService
 
     public void Register()
     {
-        _MQHelper.ReceiveNew("testmq", ProcessNew);
+        _MQHelper.ReceiveNew("queue1", ProcessNew);
     }
 
     public bool ProcessNew(string message)
@@ -494,6 +494,7 @@ public class RabbitListenerService : BackgroundService
         try
         {
             //接受message， 处理消息
+            _logger.LogInformation("RabbitMQ > ProcessNew > message:" + message);
             return true;
         }
         catch (Exception ex)
