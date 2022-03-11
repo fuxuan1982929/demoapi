@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using demoapi.DAL.Accounting;
 using demoapi.Infrastructure;
 using demoapi.MQ;
 using demoapi.RedisClient;
@@ -9,6 +10,8 @@ using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace demoapi;
 
@@ -33,7 +36,14 @@ public class Startup
         //.AddCustomConfiguration(Configuration)
         //.AddEventBus(Configuration)
         //.AddCustomAuthentication(Configuration);
-        .AddSingleton<IHostedService, MyJobService>();
+        .AddSingleton<IHostedService, MyJobService>()
+        .AddHostedService<RabbitListenerService>()
+        // configure DI for DB
+        .AddDbContext<accountingContext>(options =>
+        {
+            //设定DB
+            options.UseMySql(Configuration.GetConnectionString("MySqlConnStr"), new MySqlServerVersion(new Version(5, 7, 27)));
+        });
 
         //configure autofac
         var builder = new ContainerBuilder();
@@ -41,7 +51,7 @@ public class Startup
         builder.Populate(services);
 
         builder.RegisterModule(new MediatorModule());
-        builder.RegisterModule(new ApplicationModule(Configuration["ConnectionString"]));
+        builder.RegisterModule(new ApplicationModule(Configuration.GetConnectionString("MySqlConnStr")));
 
         return new AutofacServiceProvider(builder.Build());
     }
@@ -437,9 +447,9 @@ public class MyJobService : BackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-               
-                this._logger.LogInformation(DateTime.Now.ToString() + " MyJob。");
-                 //do
+
+                //this._logger.LogInformation(DateTime.Now.ToString() + " MyJob。");
+                //do
                 await Task.Delay(this._timeoffset, stoppingToken);
             }
             this._logger.LogInformation(DateTime.Now.ToString() + "MyJob停止。");
@@ -457,5 +467,65 @@ public class MyJobService : BackgroundService
         }
     }
 }
+
+public class RabbitListenerService : BackgroundService
+{
+    private readonly ILogger<RabbitListenerService> _logger;
+    private readonly RabbitMQHelper _MQHelper;
+
+    public RabbitListenerService(ILogger<RabbitListenerService> logger, RabbitMQHelper MQHelper)
+    {
+        this._logger = logger;
+        _MQHelper = MQHelper;
+    }
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("RabbitMQ消费者开始监听...");
+        return Task.CompletedTask;
+    }
+
+    public void Register()
+    {
+        _MQHelper.ReceiveNew("testmq", ProcessNew);
+    }
+
+    public bool ProcessNew(string message)
+    {
+        try
+        {
+            //接受message， 处理消息
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return false;
+        }
+    }
+}
+
+/*
+EF生产ORM代码部分
+https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
+
+##以下是安装最新版
+dotnet tool install --global dotnet-ef
+
+##以下是安装指定版
+dotnet tool install --global dotnet-ef --version 3.1.1
+
+##没有装的话，必须安装Design
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+##生产代码指令
+dotnet ef dbcontext scaffold "server=ng.talkofice.com;port=30466;uid=root;pwd=Magic707Nicol^^();database=accounting" 
+"Pomelo.EntityFrameworkCore.MySql" 
+-o DAL/Accounting/Models 
+--context-dir DAL/Accounting
+-f
+
+*/
+
+
 //dotnet run --launch-profile "dev"
 //dotnet run --launch-profile "prd"
