@@ -481,6 +481,7 @@ public class RabbitListenerService : BackgroundService
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("RabbitMQ消费者开始监听...");
+        Register();
         return Task.CompletedTask;
     }
 
