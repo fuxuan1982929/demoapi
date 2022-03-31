@@ -1,4 +1,5 @@
 using Autofac;
+using demoapi.Infrastructure.Idempotency;
 using demoapi.MQ;
 
 namespace demoapi.Infrastructure;
@@ -28,9 +29,9 @@ public class ApplicationModule : Autofac.Module
         //    .As<IOrderRepository>()
         //    .InstancePerLifetimeScope();
 
-        //builder.RegisterType<RequestManager>()
-        //   .As<IRequestManager>()
-        //   .InstancePerLifetimeScope();
+        builder.RegisterType<RequestManager>()
+           .As<IRequestManager>()
+           .InstancePerLifetimeScope();
 
         //builder.RegisterAssemblyTypes(typeof(CreateOrderCommandHandler).GetTypeInfo().Assembly)
         //    .AsClosedTypesOf(typeof(IIntegrationEventHandler<>));

@@ -1,3 +1,4 @@
+using demoapi.Infrastructure.Idempotency;
 using demoapi.MQ;
 using MediatR;
 
@@ -28,8 +29,9 @@ public class SendMQCommandIdentifiedCommandHandler : IdentifiedCommandHandler<Se
 {
     public SendMQCommandIdentifiedCommandHandler(
         IMediator mediator,
+        IRequestManager requestManager,
         ILogger<IdentifiedCommandHandler<SendMQCommand, bool>> logger)
-        : base(mediator, logger)
+        : base(mediator, requestManager, logger)
     {
     }
 
