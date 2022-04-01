@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using demoapi.DAL.Accounting.Models;
+using demoapi.Infrastructure.Idempotency;
 
 namespace demoapi.DAL.Accounting
 {
@@ -173,6 +174,28 @@ namespace demoapi.DAL.Accounting
                     .HasComment("用户名")
                     .UseCollation("utf8_general_ci")
                     .HasCharSet("utf8");
+            });
+
+            //服务请求表
+            modelBuilder.Entity<ClientRequest>(entity =>
+            {
+                entity.ToTable("requests");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .HasComment("id")
+                    .UseCollation("utf8_general_ci")
+                    .HasCharSet("utf8");
+
+                entity.Property(e => e.Time)
+                    .HasColumnType("datetime")
+                    .HasComment("请求时间");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .HasComment("请求名称")
+                    .UseCollation("utf8_general_ci")
+                    .HasCharSet("utf8");               
             });
 
             OnModelCreatingPartial(modelBuilder);
